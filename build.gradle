@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+}
+
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'foundation.icon:icon-sdk:2.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.havah.deployer.HavahDeployer'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+//task runJar(dependsOn:jar) {
+//    javaexec {
+//        main="-jar";
+//        args = [
+//                "./build/libs/" + getArchivesBaseName() + ".jar",
+//                "./data/param_local.json",
+//                "./data/ecosystem-fund-optimized.jar"
+//        ]
+//    }
+//}
+
+test {
+    useJUnitPlatform()
+}
