@@ -98,12 +98,13 @@ public class HavahDeployer {
                     .from(wallet.getAddress())
                     .to(to)
                     .value(value)
-                    .stepLimit(new BigInteger((String) jsonObject.get("steplimit")))
                     .deploy("application/java", bytes)
                     .params(rpcParams)
                     .build();
 
-            SignedTransaction signedTransaction = new SignedTransaction(transaction, wallet);
+            BigInteger estimatedStep = iconService.estimateStep(transaction).execute();
+
+            SignedTransaction signedTransaction = new SignedTransaction(transaction, wallet, estimatedStep.add(BigInteger.valueOf(10000)));
 
             Request<Bytes> request = iconService.sendTransaction(signedTransaction);
             try {
